@@ -24,7 +24,19 @@ pub async fn runner(service: Service, color: colored::Color) {
         service.cmd
     );
 
-    let child = cmd.spawn().expect("Failed to spawn process");
+    let child = match cmd.spawn() {
+        Ok(child) => child,
+        Err(e) => {
+            eprintln!(
+                "{} {}",
+                format!("[{}] Failed to start service:", service.name)
+                    .color(color)
+                    .bold(),
+                e
+            );
+            return;
+        }
+    };
     let stdout = child.stdout.expect("Failed to capture stdout");
     let stderr = child.stderr.expect("Failed to capture stderr");
 
