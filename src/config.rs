@@ -7,10 +7,11 @@ pub struct ForgeConfig {
     pub services: Vec<Service>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Service {
     pub name: String,
     pub dir: String,
     pub cmd: String,
     pub env: Option<HashMap<String, String>>,
+    pub watch: Option<bool>,
 }

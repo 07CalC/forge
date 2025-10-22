@@ -4,6 +4,7 @@ mod config;
 mod parser;
 mod print_banner;
 mod runner;
+mod watcher;
 
 #[tokio::main]
 async fn main() {
@@ -16,6 +17,7 @@ async fn main() {
         colored::Color::Magenta,
         colored::Color::Cyan,
         colored::Color::White,
+        colored::Color::BrightMagenta,
     ];
     let mut handles = vec![];
     print_banner::print_banner();
