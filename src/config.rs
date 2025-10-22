@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde_derive::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -10,4 +12,5 @@ pub struct Service {
     pub name: String,
     pub dir: String,
     pub cmd: String,
+    pub env: Option<HashMap<String, String>>,
 }

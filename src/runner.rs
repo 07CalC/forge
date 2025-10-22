@@ -4,14 +4,18 @@ use std::process::Stdio;
 use tokio::{io::AsyncBufReadExt, process::Command};
 
 pub async fn runner(service: Service, color: colored::Color) {
-    let child = Command::new("sh")
-        .arg("-c")
-        .arg(&service.cmd)
-        .current_dir(&service.dir)
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .spawn()
-        .expect(format!("Failed to start service: {}", &service.name).as_str());
+    let mut cmd = Command::new("sh");
+    cmd.arg("-c").arg(&service.cmd);
+    cmd.current_dir(&service.dir);
+    cmd.stdout(Stdio::piped());
+    cmd.stderr(Stdio::piped());
+
+    if let Some(envs) = &service.env {
+        for (key, value) in envs {
+            cmd.env(key, value);
+        }
+    }
+
     println!(
         "{} {}",
         format!("[{}] Starting service...", service.name)
@@ -19,6 +23,8 @@ pub async fn runner(service: Service, color: colored::Color) {
             .bold(),
         service.cmd
     );
+
+    let child = cmd.spawn().expect("Failed to spawn process");
     let stdout = child.stdout.expect("Failed to capture stdout");
     let stderr = child.stderr.expect("Failed to capture stderr");
 
