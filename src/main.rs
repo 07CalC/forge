@@ -4,7 +4,6 @@ mod config;
 mod parser;
 mod print_banner;
 mod runner;
-mod watcher;
 
 #[tokio::main]
 async fn main() {
