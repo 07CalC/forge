@@ -1,9 +1,18 @@
 [package]
-name = "forge"
+name = "fyrer"
 version = "0.1.0"
 edition = "2024"
+authors = ["Calc hello@vinm.me"]
+description = "A lightweight tool to run multiple dev servers concurrently"
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/07calc/forge"
+keywords = ["dev", "server", "concurrent", "tool"]
+categories = ["development-tools"]
+exclude = ["/target/*", "*.rs.bk", "*.log", "examples/*"]
 
 [dependencies]
+clap = "4.5.50"
 colored = "3.0.0"
 serde = "1.0.228"
 serde_derive = "1.0.228"

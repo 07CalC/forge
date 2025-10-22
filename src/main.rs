@@ -6,7 +6,7 @@ mod runner;
 
 #[tokio::main]
 async fn main() {
-    let config = load_config("forge.yml");
+    let config = load_config("fyrer.yml");
     let colors = vec![
         colored::Color::Green,
         colored::Color::Yellow,
