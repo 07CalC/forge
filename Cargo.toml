@@ -1,12 +1,12 @@
 [package]
 name = "fyrer"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2024"
 authors = ["Calc hello@vinm.me"]
 description = "A lightweight tool to run multiple dev servers concurrently"
 readme = "README.md"
 license = "MIT"
-repository = "https://github.com/07calc/forge"
+repository = "https://github.com/07calc/fyrer"
 keywords = ["dev", "server", "concurrent", "tool"]
 categories = ["development-tools"]
 exclude = ["/target/*", "*.rs.bk", "*.log", "examples/*"]

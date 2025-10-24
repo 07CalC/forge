@@ -11,7 +11,7 @@ lightweight tool to run multiple dev servers concurrently
 - easy to use YAML configuration file
 - logs output of each server with name prefix
 - cross-platform (Linux, macOS, Windows)
-- hot reload (only available for linux for now)
+- hot reload 
 
 ## Installation
 
