@@ -216,52 +216,60 @@ async fn run_once(service: Service, color: colored::Color) {
     let _ = tokio::join!(out_task, err_task);
 }
 
-async fn kill_process(child: &mut Child, service_name: &str, color: colored::Color) {
+pub async fn kill_process(child: &mut Child, service_name: &str, color: Color) {
     if let Some(pid) = child.id() {
-        let output = Command::new("ps")
-            .arg("-o")
-            .arg("pid=")
-            .arg("--ppid")
-            .arg(pid.to_string())
-            .output()
-            .await;
+        #[cfg(unix)]
+        {
+            let output = Command::new("ps")
+                .arg("-o")
+                .arg("pid=")
+                .arg("--ppid")
+                .arg(pid.to_string())
+                .output()
+                .await;
 
-        match output {
-            Ok(output) => {
-                let child_pids = String::from_utf8_lossy(&output.stdout)
-                    .lines()
-                    .filter_map(|l| l.trim().parse::<u32>().ok())
-                    .collect::<Vec<_>>();
+            match output {
+                Ok(output) => {
+                    let pids = String::from_utf8_lossy(&output.stdout)
+                        .lines()
+                        .filter_map(|l| l.trim().parse::<u32>().ok())
+                        .collect::<Vec<_>>();
 
-                for child_pid in &child_pids {
+                    for child_pid in pids {
+                        let _ = Command::new("kill")
+                            .arg("-9")
+                            .arg(child_pid.to_string())
+                            .status()
+                            .await;
+                    }
+
                     let _ = Command::new("kill")
                         .arg("-9")
-                        .arg(child_pid.to_string())
+                        .arg(pid.to_string())
                         .status()
                         .await;
                 }
-
-                let _ = Command::new("kill")
-                    .arg("-9")
-                    .arg(pid.to_string())
-                    .status()
-                    .await;
+                Err(_) => {
+                    let _ = Command::new("kill")
+                        .arg("-9")
+                        .arg(pid.to_string())
+                        .status()
+                        .await;
+                }
             }
-            Err(e) => {
-                eprintln!(
-                    "{} {}",
-                    format!("[{}] Failed to fetch child processes:", service_name)
-                        .color(color)
-                        .bold(),
-                    e
-                );
+        }
 
-                let _ = Command::new("kill")
-                    .arg("-9")
-                    .arg(pid.to_string())
-                    .status()
-                    .await;
-            }
+        #[cfg(windows)]
+        {
+            let _ = Command::new("taskkill")
+                .arg("/PID")
+                .arg(pid.to_string())
+                .arg("/T")
+                .arg("/F")
+                .stdout(Stdio::null())
+                .stderr(Stdio::null())
+                .status()
+                .await;
         }
     }
 }
