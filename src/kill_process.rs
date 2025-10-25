@@ -53,8 +53,8 @@ pub async fn kill_process(child: &mut Child) {
                 .arg(pid.to_string())
                 .arg("/T")
                 .arg("/F")
-                .stdout(Stdio::null())
-                .stderr(Stdio::null())
+                .stdout(Stdio::inherit())
+                .stderr(Stdio::ingerit())
                 .status()
                 .await;
         }
