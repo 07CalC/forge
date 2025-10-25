@@ -13,6 +13,7 @@ lightweight tool to run multiple dev servers concurrently
 - logs output of each server with name prefix
 - cross-platform (Linux, macOS, Windows)
 - hot reload 
+- ignore specific files or directories for hot reload
 
 ## Installation
 
@@ -58,4 +59,7 @@ servers:
     cmd: npm start
     dir: ./project2
     watch: true # enable hot reload
+    ignore: 
+      - "node_modules/**"
+      - "*.db"
 ```

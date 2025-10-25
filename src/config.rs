@@ -15,6 +15,7 @@ pub struct Service {
     pub cmd: String,
     pub env: Option<HashMap<String, String>>,
     pub watch: Option<bool>,
+    pub ignore: Option<Vec<String>>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
