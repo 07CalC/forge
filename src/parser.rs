@@ -1,7 +1,8 @@
-use crate::config::ForgeConfig;
 use std::{fs, process};
 
-pub fn load_config(path: &str) -> ForgeConfig {
+use crate::config::FyrerConfig;
+
+pub fn load_config(path: &str) -> FyrerConfig {
     let data = match fs::read_to_string(path) {
         Ok(content) => content,
         Err(_) => {

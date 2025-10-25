@@ -3,7 +3,8 @@ use std::collections::HashMap;
 use serde_derive::Deserialize;
 
 #[derive(Debug, Deserialize)]
-pub struct ForgeConfig {
+pub struct FyrerConfig {
+    pub installers: Option<Vec<Installer>>,
     pub services: Vec<Service>,
 }
 
@@ -14,4 +15,10 @@ pub struct Service {
     pub cmd: String,
     pub env: Option<HashMap<String, String>>,
     pub watch: Option<bool>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Installer {
+    pub dir: String,
+    pub cmd: String,
 }

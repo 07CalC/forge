@@ -6,6 +6,7 @@ lightweight tool to run multiple dev servers concurrently
 ## features
 
 - run multiple dev servers concurrently
+- installer cmd for each server runs before starting the server
 - specify working directory for each server
 - set environment variables for each server
 - easy to use YAML configuration file
@@ -41,6 +42,11 @@ fyrer
 example config file `fyrer.yml`:
 
 ```yaml
+
+installers:
+  - dir: ./project1
+    cmd: pip install -r requirements.txt
+
 servers:
   - name: server1
     cmd: python -m http.server 8000

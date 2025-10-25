@@ -10,7 +10,7 @@ use tokio::{
     time::{Duration, sleep},
 };
 
-pub async fn run_with_watch(service: Service, color: colored::Color) {
+pub async fn run_with_watch(service: Service, color: colored::Color, max_name_len: usize) {
     let (tx, mut rx) = mpsc::channel(1);
     let watch_dir = Path::new(&service.dir);
 
@@ -38,29 +38,30 @@ pub async fn run_with_watch(service: Service, color: colored::Color) {
         watcher
     };
 
+    let out_prefix = format!("[{}]", service.name);
+    let padded_name = format!("{:<width$}", out_prefix.clone(), width = max_name_len);
+
     println!(
-        "{}",
-        format!("[{}] Watching {} for changes...", service.name, service.dir)
-            .color(color)
-            .bold()
+        "├─{} ➤ Watching {} for changes...",
+        padded_name.color(color).bold(),
+        service.dir
     );
 
-    let mut child: Option<Child> = spawn_service(&service, color, false).await;
+    let mut child: Option<Child> = spawn_service(&service, color, false, max_name_len).await;
 
     loop {
         tokio::select! {
             _ = rx.recv() => {
                 if let Some(mut c) = child.take() {
+                    let padded_name = format!("{:<width$}", out_prefix.clone(), width = max_name_len);
                     println!(
-                        "{}",
-                        format!("[{}] File changed, restarting service...", service.name)
-                            .color(color)
-                            .bold()
+                        "├─{} ➤ File changed, restarting service...",
+                        padded_name.color(color).bold()
                     );
                     kill_process(&mut c).await;
                     sleep(Duration::from_millis(500)).await;
                 }
-                child = spawn_service(&service, color, false).await;
+                child = spawn_service(&service, color, false, max_name_len).await;
 
                 sleep(Duration::from_millis(500)).await;
                 while rx.try_recv().is_ok() {}
@@ -72,14 +73,13 @@ pub async fn run_with_watch(service: Service, color: colored::Color) {
                     std::future::pending().await
                 }
             } => {
+                let padded_name = format!("{:<width$}", out_prefix.clone(), width = max_name_len);
                 println!(
-                    "{}",
-                    format!("[{}] Service exited, restarting...", service.name)
-                        .color(color)
-                        .bold()
+                    "├─{} ➤ Service exited, restarting...",
+                    padded_name.color(color).bold()
                 );
                 sleep(Duration::from_millis(1000)).await;
-                child = spawn_service(&service, color, false).await;
+                child = spawn_service(&service, color, false, max_name_len).await;
             }
         }
     }
