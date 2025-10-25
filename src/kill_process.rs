@@ -2,6 +2,7 @@ use tokio::process::Child;
 use tokio::{
     process::Command,
 };
+use std::process::Stdio;
 
 pub async fn kill_process(child: &mut Child) {
     if let Some(pid) = child.id() {
@@ -54,7 +55,7 @@ pub async fn kill_process(child: &mut Child) {
                 .arg("/T")
                 .arg("/F")
                 .stdout(Stdio::inherit())
-                .stderr(Stdio::ingerit())
+                .stderr(Stdio::inherit())
                 .status()
                 .await;
         }
