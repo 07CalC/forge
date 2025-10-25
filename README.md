@@ -2,18 +2,17 @@
 
 lightweight tool to run multiple dev servers concurrently
 
+## Features
 
-## features
-
-- run multiple dev servers concurrently
-- installer cmd for each server runs before starting the server
-- specify working directory for each server
-- set environment variables for each server
-- easy to use YAML configuration file
-- logs output of each server with name prefix
-- cross-platform (Linux, macOS, Windows)
-- hot reload 
-- ignore specific files or directories for hot reload
+- Run multiple development servers concurrently
+- Define installer commands that run before starting each server
+- Set a working directory per server
+- Assign environment variables per server
+- YAML-based configuration file
+- Prefixed log output for readability
+- Cross-platform support (Linux, macOS, Windows)
+- Optional hot reload
+- Configurable file and directory ignore rules for hot reload
 
 ## Installation
 
@@ -34,7 +33,7 @@ cargo install --path .
 
 ## Usage
 
-run from `fyrer.yml` file:
+`fyrer` looks for a `fyrer.yml` file in the current directory:
 
 ```bash
 fyrer
@@ -43,7 +42,6 @@ fyrer
 example config file `fyrer.yml`:
 
 ```yaml
-
 installers:
   - dir: ./project1
     cmd: pip install -r requirements.txt
@@ -55,11 +53,18 @@ servers:
     env:
       PORT: 8000
       ENV: dev
+
   - name: server2
     cmd: npm start
     dir: ./project2
-    watch: true # enable hot reload
-    ignore: 
+    watch: true  # enable hot reload
+    ignore:
       - "node_modules/**"
       - "*.db"
 ```
+
+## Notes
+
+- `watch: true` enables file monitoring for that server.
+- Ignore patterns follow `glob` syntax.
+- restarts servers when watched files change.
